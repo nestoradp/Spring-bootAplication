@@ -10,6 +10,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "rol")
+
 public class Rol implements Serializable {
 
     @Id
@@ -23,10 +24,6 @@ public class Rol implements Serializable {
 
     @Column
     private String descripcion;
-
-    @ManyToMany(mappedBy = "roles")
-    private List<Usuario> usuarios;
-
 
     public int getId() {
         return id;

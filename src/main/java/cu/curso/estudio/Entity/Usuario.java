@@ -38,11 +38,11 @@ public class Usuario implements Serializable {
     private String confirmarContrasenna;
 
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_role",
             joinColumns = @JoinColumn(name = "user_id",referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-    private List<Rol> roles;
+    private Set<Rol> roles;
 
     public Usuario() {
 
@@ -78,9 +78,9 @@ public class Usuario implements Serializable {
         return contrasenna;
     }
 
-
-
-
+    public Set<Rol> getRoles() {
+        return roles;
+    }
 
     public void setPrimerNombre(String primerNombre) {
         PrimerNombre = primerNombre;
@@ -102,7 +102,9 @@ public class Usuario implements Serializable {
         this.contrasenna = contrasenna;
     }
 
-
+    public void setRoles(Set<Rol> roles) {
+        this.roles = roles;
+    }
 
     @Override
     public String toString() {
