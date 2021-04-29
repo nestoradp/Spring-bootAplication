@@ -10,10 +10,12 @@ import java.util.Set;
 
 @Entity
 @Table(name = "rol")
-
 public class Rol implements Serializable {
 
+
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO, generator ="native" )
+    @GenericGenerator(name = "native", strategy = "native")
    private int id;
 
 
