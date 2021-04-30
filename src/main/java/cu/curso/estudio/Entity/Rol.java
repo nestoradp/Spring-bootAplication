@@ -3,6 +3,8 @@ package cu.curso.estudio.Entity;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
@@ -20,11 +22,12 @@ public class Rol implements Serializable {
 
 
     @Column
+    @NotBlank(message = "El nombre no puede estar vacio")
     private String nombre;
 
-
-
     @Column
+    @Size(max=20, message = "Limite de caracteres")
+    @NotBlank(message = "La descricpcion no puede estar vacia")
     private String descripcion;
 
     public int getId() {

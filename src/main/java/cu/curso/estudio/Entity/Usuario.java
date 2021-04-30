@@ -1,10 +1,14 @@
 package cu.curso.estudio.Entity;
 
+import com.sun.istack.NotNull;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.ManyToAny;
 
 import javax.management.relation.Role;
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
@@ -20,18 +24,26 @@ public class Usuario implements Serializable {
     private int id;
 
     @Column
+    @NotBlank(message = "El Nombre no puede estar vacio")
+    @Size(min = 5, max = 8, message = "Caracteres incorectos")
     private String PrimerNombre;
 
     @Column
+    @NotBlank(message = "El Nombre no puede estar vacio")
+    @Size(min = 5, max = 8, message = "Caracteres incorectos")
     private String SegundoNombre;
 
     @Column
+    @NotBlank(message = "El Nombre no puede estar vacio")
+    @Email(message = "Formato incorrecto de correo")
     private String email;
 
     @Column(unique = true)
+    @NotBlank(message = "El Nombre no puede estar vacio")
     private String usuario;
 
     @Column
+    @NotBlank(message = "El Nombre no puede estar vacio")
     private String contrasenna;
 
     @Transient
