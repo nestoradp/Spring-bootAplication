@@ -24,26 +24,26 @@ public class Usuario implements Serializable {
     private int id;
 
     @Column
-    @NotBlank(message = "El Nombre no puede estar vacio")
+    @NotBlank(message = "El Primer Nombre no puede estar vacio")
     @Size(min = 5, max = 8, message = "Caracteres incorectos")
     private String PrimerNombre;
 
     @Column
-    @NotBlank(message = "El Nombre no puede estar vacio")
+    @NotBlank(message = "El Segundo Nombreno puede estar vacio")
     @Size(min = 5, max = 8, message = "Caracteres incorectos")
     private String SegundoNombre;
 
     @Column
-    @NotBlank(message = "El Nombre no puede estar vacio")
+    @NotBlank(message = "El correo no puede estar vacio")
     @Email(message = "Formato incorrecto de correo")
     private String email;
 
     @Column(unique = true)
-    @NotBlank(message = "El Nombre no puede estar vacio")
+    @NotBlank(message = "El usuario no puede estar vacio")
     private String usuario;
 
     @Column
-    @NotBlank(message = "El Nombre no puede estar vacio")
+    @NotBlank(message = "la contrasenna no puede estar vacio")
     private String contrasenna;
 
     @Transient
