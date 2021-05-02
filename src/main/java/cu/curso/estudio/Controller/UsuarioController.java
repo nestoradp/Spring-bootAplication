@@ -26,30 +26,55 @@ public class UsuarioController {
    @Autowired
   UsuarioRepository usuarios;
 
-  @GetMapping(value = "/usuarios")
+   @GetMapping(value = "/usuarios")
    public ResponseEntity<Map<String, List<Usuario>>>DevolverUsuarios(){
       HashMap<String,List<Usuario>> map = new HashMap<>();
       map.put("user.list", usuarios.findAll() );
       return new ResponseEntity<Map<String, List<Usuario>>>(map, HttpStatus.OK );
    }
-      @PostMapping(value = "/crear")
+     @PostMapping(value = "/crear")
      @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Map<String,Object>> CrearUsuario(@Valid @RequestBody Usuario u, BindingResult result){
           HashMap<String,Object> map = new HashMap<>();
+           if(VerificarUsuario(u.getUsuario())){
+               ObjectError errorUsuario = new ObjectError("usuario","El usuario ya existe");
+               result.addError(errorUsuario);
+           }
           if (result.hasErrors()){
               map.put("usuario",u);
 
-          //  map.put("error",result.getAllErrors().stream().collect(Collectors.toList()));
-              map.put("error",result.getFieldErrors().stream().map(this::mapError).collect(Collectors.toList()));
-          }else{
+            map.put("error",result.getAllErrors().stream().map(this::mapError).collect(Collectors.toList()));
+           //   map.put("error",result.getFieldErrors().stream().map(this::mapError).collect(Collectors.toList()));
+          }
+          else{
          map.put("usuario",usuarios.save(u));
          map.put("mesagge","Usuario Insertado");}
-        return new ResponseEntity<Map<String,Object>>( map, HttpStatus.OK);
-        //  return usuarios.save(u);
-
-
+        return new ResponseEntity<Map<String,Object>>( map,HttpStatus.OK);
 
     }
+
+
+
+
+
+
+
+
+
+
+
+
+     private boolean VerificarUsuario(String usuario){
+         List<Usuario> nameuser = usuarios.findAll();
+         for (Usuario user: nameuser) {
+             if(user.getUsuario().equals(usuario))
+                 return true;
+         }
+           return false;
+
+     }
+
+
 
      private ValidatorError mapError(ObjectError objectError) {
          if (objectError instanceof FieldError) {

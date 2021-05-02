@@ -10,7 +10,7 @@ import java.util.Set;
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario,Integer> {
 
-       public Set<Usuario> findByUsuario(String usuario);
+       public Set<String> findByUsuario(String usuario);
 
 
 

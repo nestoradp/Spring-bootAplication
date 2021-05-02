@@ -1,6 +1,5 @@
 package cu.curso.estudio.Entity;
 
-import com.sun.istack.NotNull;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.ManyToAny;
 
@@ -8,6 +7,7 @@ import javax.management.relation.Role;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.List;
@@ -24,14 +24,12 @@ public class Usuario implements Serializable {
     private int id;
 
     @Column
-    @NotBlank(message = "El Primer Nombre no puede estar vacio")
-    @Size(min = 5, max = 8, message = "Caracteres incorectos")
-    private String PrimerNombre;
+    @NotNull(message = "El nombre no puede estar vacio")
+    private String nombre;
 
     @Column
-    @NotBlank(message = "El Segundo Nombreno puede estar vacio")
-    @Size(min = 5, max = 8, message = "Caracteres incorectos")
-    private String SegundoNombre;
+    @NotBlank(message = "El Apellido no puede estar vacio")
+    private String apellidos;
 
     @Column
     @NotBlank(message = "El correo no puede estar vacio")
@@ -39,6 +37,7 @@ public class Usuario implements Serializable {
     private String email;
 
     @Column(unique = true)
+
     @NotBlank(message = "El usuario no puede estar vacio")
     private String usuario;
 
@@ -56,26 +55,18 @@ public class Usuario implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Set<Rol> roles;
 
-    public Usuario() {
 
-        super();
-    }
-
-    public Usuario(int id) {
-        super();
-        this.id = id;
-    }
 
     public int getId() {
         return id;
     }
 
-    public String getPrimerNombre() {
-        return PrimerNombre;
+    public String getNombre() {
+        return nombre;
     }
 
-    public String getSegundoNombre() {
-        return SegundoNombre;
+    public String getApellidos() {
+        return apellidos;
     }
 
     public String getEmail() {
@@ -94,12 +85,12 @@ public class Usuario implements Serializable {
         return roles;
     }
 
-    public void setPrimerNombre(String primerNombre) {
-        PrimerNombre = primerNombre;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
-    public void setSegundoNombre(String segundoNombre) {
-        SegundoNombre = segundoNombre;
+    public void setApellidos(String apellidos) {
+        this.apellidos = apellidos;
     }
 
     public void setEmail(String email) {
@@ -122,8 +113,8 @@ public class Usuario implements Serializable {
     public String toString() {
         return "Usuario{" +
                 "id=" + id +
-                ", PrimerNombre='" + PrimerNombre + '\'' +
-                ", SegundoNombre='" + SegundoNombre + '\'' +
+                ", nombre='" + nombre + '\'' +
+                ", apellidos='" + apellidos + '\'' +
                 ", email='" + email + '\'' +
                 ", usuario='" + usuario + '\'' +
                 ", contrasenna='" + contrasenna + '\'' +
@@ -137,11 +128,11 @@ public class Usuario implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Usuario usuario1 = (Usuario) o;
-        return id == usuario1.id && Objects.equals(PrimerNombre, usuario1.PrimerNombre) && Objects.equals(SegundoNombre, usuario1.SegundoNombre) && Objects.equals(email, usuario1.email) && Objects.equals(usuario, usuario1.usuario) && Objects.equals(contrasenna, usuario1.contrasenna) && Objects.equals(confirmarContrasenna, usuario1.confirmarContrasenna) && Objects.equals(roles, usuario1.roles);
+        return id == usuario1.id && Objects.equals(nombre, usuario1.nombre) && Objects.equals(apellidos, usuario1.apellidos) && Objects.equals(email, usuario1.email) && Objects.equals(usuario, usuario1.usuario) && Objects.equals(contrasenna, usuario1.contrasenna) && Objects.equals(confirmarContrasenna, usuario1.confirmarContrasenna) && Objects.equals(roles, usuario1.roles);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, PrimerNombre, SegundoNombre, email, usuario, contrasenna, confirmarContrasenna, roles);
+        return Objects.hash(id, nombre, apellidos, email, usuario, contrasenna, confirmarContrasenna, roles);
     }
 }
