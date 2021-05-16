@@ -81,6 +81,10 @@ public class Usuario implements Serializable {
         return contrasenna;
     }
 
+    public String getConfirmarContrasenna() {
+        return confirmarContrasenna;
+    }
+
     public Set<Rol> getRoles() {
         return roles;
     }

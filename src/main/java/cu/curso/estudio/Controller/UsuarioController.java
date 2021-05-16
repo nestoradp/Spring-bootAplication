@@ -1,9 +1,11 @@
 package cu.curso.estudio.Controller;
 
 import com.fasterxml.jackson.databind.util.JSONPObject;
+import cu.curso.estudio.DTO.ChangePasswordDTO;
 import cu.curso.estudio.Entity.Usuario;
 import cu.curso.estudio.Entity.ValidatorError;
 import cu.curso.estudio.Repository.UsuarioRepository;
+import cu.curso.estudio.service.UsuarioService;
 import org.aspectj.bridge.IMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.swing.text.html.parser.Entity;
 import javax.validation.Valid;
+import javax.validation.constraints.Null;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -25,6 +28,8 @@ import java.util.stream.Collectors;
 public class UsuarioController {
    @Autowired
   UsuarioRepository usuarios;
+   @Autowired
+   UsuarioService usuarioService;
 
    @GetMapping(value = "/usuarios")
    public ResponseEntity<Map<String, List<Usuario>>>DevolverUsuarios(){
@@ -36,10 +41,14 @@ public class UsuarioController {
      @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Map<String,Object>> CrearUsuario(@Valid @RequestBody Usuario u, BindingResult result){
           HashMap<String,Object> map = new HashMap<>();
-           if(VerificarUsuario(u.getUsuario())){
+           if(CheckUserName(u)){
                ObjectError errorUsuario = new ObjectError("usuario","El usuario ya existe");
                result.addError(errorUsuario);
            }
+         if(ChekearPasswordMatch(u)){
+             ObjectError errorPass = new ObjectError("password","El password no coincide");
+             result.addError(errorPass);
+         }
           if (result.hasErrors()){
               map.put("usuario",u);
 
@@ -53,7 +62,45 @@ public class UsuarioController {
 
     }
 
+       //@GetMapping(value = "/eliminar/{id}")
+       @DeleteMapping(value = "/eliminar/{id}")
+      public ResponseEntity<Map<String, Object>> EliminarUsuario(@PathVariable(name = "id") int id)  {
+       HashMap<String, Object> map =new HashMap<>();
 
+        try {
+            Usuario user = usuarioService.Eliminar(id);
+            map.put("message","Usuario  "+"  "+ user.getNombre()+"  "+ " eliminado correctamete");
+        } catch (Exception e) {
+            map.put("messageError", e.getMessage());
+        }
+
+        return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+
+    }
+   @PostMapping(value = "/editarUsuario/cambiarpass")
+    public ResponseEntity<Map<String,Object>>CambiarPassword(@Valid @RequestBody ChangePasswordDTO changeDTO, BindingResult error)   {
+      HashMap<String,Object> map = new HashMap<>();
+       if(error.hasErrors()){
+                 map.put("usuario",changeDTO);
+
+                 map.put("error",error.getAllErrors().stream().map(this::mapError).collect(Collectors.toList()));
+             }
+       else{
+           try {
+            Usuario u =   usuarioService.Cambiarpassword(changeDTO);
+            map.put("usuario",u);
+            map.put("message", "LA contrasenna se actualizo correctamente");
+           } catch (Exception e) {
+               map.put("changeDTO",changeDTO);
+               map.put("error",e.getMessage());
+           }
+
+
+       }
+          return new ResponseEntity<Map<String,Object>>(map,HttpStatus.OK);
+
+
+    }
 
 
 
@@ -73,6 +120,29 @@ public class UsuarioController {
            return false;
 
      }
+
+     public Usuario getUsuarioById(int id) throws Exception {
+        Usuario userfound = usuarios.findById(id);
+       if(userfound != null)
+           return userfound;
+              throw new Exception("El usuario no existe");
+     }
+
+
+     private boolean CheckUserName(Usuario user) {
+    Optional<Usuario> userfound = usuarios.findByUsuario(user.getUsuario());
+    if(userfound.isPresent()){
+      return true;
+    }
+      return false;
+     }
+
+      private boolean ChekearPasswordMatch(Usuario user) {
+       if(!user.getContrasenna().equals(user.getConfirmarContrasenna())){
+         return true;
+       }
+       return false;
+      }
 
 
 
