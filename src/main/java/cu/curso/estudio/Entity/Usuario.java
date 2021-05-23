@@ -55,6 +55,14 @@ public class Usuario implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Set<Rol> roles;
 
+    public Usuario() {
+    }
+
+    public Usuario(String nombre, String contrasenna, Set roles) {
+        this.nombre =nombre;
+        this.contrasenna=contrasenna;
+        this.roles=roles;
+    }
 
 
     public int getId() {

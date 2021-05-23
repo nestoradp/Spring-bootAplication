@@ -11,6 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.web.reactive.server.XpathAssertions;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.DefaultMessageCodesResolver;
 import org.springframework.validation.FieldError;
@@ -23,6 +27,7 @@ import javax.validation.constraints.Null;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@PreAuthorize("hasAuthority('Administrador')")
 @RestController
 @RequestMapping(path = "/AdminUser")
 public class UsuarioController {
@@ -30,6 +35,7 @@ public class UsuarioController {
   UsuarioRepository usuarios;
    @Autowired
    UsuarioService usuarioService;
+
 
    @GetMapping(value = "/usuarios")
    public ResponseEntity<Map<String, List<Usuario>>>DevolverUsuarios(){
@@ -56,6 +62,8 @@ public class UsuarioController {
            //   map.put("error",result.getFieldErrors().stream().map(this::mapError).collect(Collectors.toList()));
           }
           else{
+          String hash=  passwordEncoder().encode(u.getContrasenna());
+          u.setContrasenna(hash);
          map.put("usuario",usuarios.save(u));
          map.put("mesagge","Usuario Insertado");}
         return new ResponseEntity<Map<String,Object>>( map,HttpStatus.OK);
@@ -154,6 +162,11 @@ public class UsuarioController {
          return new ValidatorError(objectError.getObjectName(), objectError.getDefaultMessage());
      }
 
+    private PasswordEncoder passwordEncoder(){
+        BCryptPasswordEncoder bCryptPasswordEncoder =new BCryptPasswordEncoder(4);
+        return bCryptPasswordEncoder;
+
+    }
 
 
 }
