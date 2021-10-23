@@ -5,6 +5,8 @@ import cu.curso.estudio.DTO.ChangePasswordDTO;
 import cu.curso.estudio.Entity.Usuario;
 import cu.curso.estudio.Repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,19 +30,19 @@ public class UsuarioService implements IUsuarioService{
     @Override
     public Usuario Cambiarpassword(ChangePasswordDTO changeDTO) throws Exception {
          Usuario user = getUsuarioById(changeDTO.getId());
-       if(!user.getContrasenna().equals(changeDTO.getAnteriorContrasenna())){
+       if(! passwordEncoder().matches(changeDTO.getAnteriorContrasenna(),user.getContrasenna())){
            throw new Exception("La contrasenna Anterior es incorrecta");
 
        }
 
-       if(user.getContrasenna().equals(changeDTO.getNewContrasenna())){
+       if(passwordEncoder().matches(user.getContrasenna(),changeDTO.getAnteriorContrasenna())){
            throw new Exception("La contrasenna no puede ser igual a la anterior");
        }
 
        if(!changeDTO.getNewContrasenna().equals(changeDTO.getConfirmarContrasenna())){
            throw new Exception("La contrasenna no coinciden");
     }
-          user.setContrasenna(changeDTO.getNewContrasenna());
+          user.setContrasenna( passwordEncoder().encode(changeDTO.getNewContrasenna()));
         return usuarioRepository.save(user);
 
 
@@ -55,7 +57,11 @@ public class UsuarioService implements IUsuarioService{
         throw new Exception("El usuario no existe");
     }
 
+    private PasswordEncoder passwordEncoder(){
+        BCryptPasswordEncoder bCryptPasswordEncoder =new BCryptPasswordEncoder(4);
+        return bCryptPasswordEncoder;
 
+    }
 
 
     }

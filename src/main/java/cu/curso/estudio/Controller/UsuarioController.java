@@ -63,6 +63,7 @@ public class UsuarioController {
           }
           else{
           String hash=  passwordEncoder().encode(u.getContrasenna());
+
           u.setContrasenna(hash);
          map.put("usuario",usuarios.save(u));
          map.put("mesagge","Usuario Insertado");}
